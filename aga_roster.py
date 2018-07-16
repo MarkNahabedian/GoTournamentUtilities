@@ -3,9 +3,17 @@
 import abc
 import csv
 import datetime
+import urllib.request
+
 
 AGA_MEMBER_FILE_URI = 'https://www.usgo.org/ratings/TDListA.txt'
 AGA_MEMBER_FILE_NAME = 'TDListA.txt'
+
+
+def fetch_aga_membership_file():
+  print("Fetching %s." % AGA_MEMBER_FILE_URI)
+  urllib.request.urlretrieve(AGA_MEMBER_FILE_URI, AGA_MEMBER_FILE_NAME)
+
 
 class AGAMembersAlreadyLoaded (Exception):
   def __str__(self):
@@ -21,6 +29,16 @@ class AGAMember (object):
     '''Raises AGAMembersAlreadyLoaded if the list of loaded AGA members isn't empty.'''
     if len(cls.AllMembers) > 0:
       raise AGAMembersAlreadyLoaded()
+
+  @classmethod
+  def ensure_loaded(cls):
+    if len(cls.AllMembers) > 0:
+      return
+    try:
+      cls.read_member_file()
+    except FileNotFoundError:
+      fetch_aga_membership_file()
+      cls.read_member_file()
 
   @classmethod
   def read_member_file(cls):

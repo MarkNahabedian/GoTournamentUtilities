@@ -18,27 +18,24 @@ AGA_ID = 7068
 
 
 class TestAGARoster(unittest.TestCase):
-  def ensure_loaded(self):
+  def setup(self):
     os.chdir(os.path.join(os.path.dirname(sys.modules[__name__].__file__), 'test'))
-    try:
-      AGAMember.read_member_file()
-    except AGAMembersAlreadyLoaded:
-      pass
+    AGAMember.ensure_loaded()
 
   def test_read(self):
-    self.ensure_loaded()
+    self.setup()
     # Expect a reasonable number of records read:
     self.assertGreaterEqual(len(AGAMember.AllMembers), 2000)
 
   def test_id_lookup(self):
-    self.ensure_loaded()
+    self.setup()
     m = AGAMember.lookupID(AGA_ID)
     self.assertNotEqual(m, None)
     self.assertEqual(FIRST_NAME, m.first_name)
     self.assertEqual(LAST_NAME, m.last_name)
 
   def test_substring_lookup(self):
-    self.ensure_loaded()
+    self.setup()
     found = AGAMember.search('ahabed')
     self.assertEqual(len(found), 1)
     m = found[0]
