@@ -18,6 +18,18 @@ This is how I envision the workflow:
 
 ## Notes
 
+### Desigbn Principles
+
+All information associated with a tournament should be maintained in
+tab separated text files.  This allows the tournament director to view
+and edit the data associated with the tournament to deal with software
+bugs or unanticipated edge cases.
+
+Programs will have a simple terminal based interactive user
+interface.  Though a direct manipulation graphical user interface has
+a simpler learning curve, they tend to be more cumbersome to use than
+a keyboard-only interface.
+
 ### AGA Membership File
 
 https://www.usgo.org/ratings/TDListA.txt is a tab delimited text file.  The columns are
