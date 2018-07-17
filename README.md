@@ -51,6 +51,12 @@ https://www.usgo.org/ratings/TDListA.txt is a tab delimited text file.  The colu
 * last rated game?
 
 
+### AGA results reporting format
+
+http://www.usgo.org/qualifications-rated-games documents the format of
+the file that should be submitted to the AGA to report tournament
+results.
+
 ### players.tsv
 
 **players.tsv** is created and maintained by registration.py.  It lists
