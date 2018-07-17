@@ -70,7 +70,6 @@ class AGAMember (object):
     if len(expiration) == 3:
       expiration_date = datetime.date(int(expiration[2]), int(expiration[0]), int(expiration[1]))
     member = AGAMember(last_name, first_name, aga_id, membership_type, rating, expiration_date)
-    cls.AllMembers.append(member)
 
   @classmethod
   def search(cls, substring):
@@ -100,6 +99,6 @@ class AGAMember (object):
     self.membership_type = membership_type
     self.rating = rating
     self.expiration_date = expiration_date
-
+    self.__class__.AllMembers.append(self)
 
 
