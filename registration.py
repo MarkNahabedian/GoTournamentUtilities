@@ -4,7 +4,7 @@ import sys
 from aga_roster import AGAMember
 import command_loop
 
-REGISTRATION_FILE = 'registered.tsv'
+REGISTRATION_FILE = 'players.tsv'
 
 parser = argparse.ArgumentParser()
 
@@ -48,8 +48,8 @@ class ApplicationState(object):
 
 def pretty_member(member, listformat=False):
   if listformat:
-    return '%6d %s, %s' % (member.aga_id, member.last_name, member.first_name)
-  return '%d %s, %s' % (member.aga_id, member.last_name, member.first_name)
+    return '%6d %s, %s (%s)' % (member.aga_id, member.last_name, member.first_name, member.rank())
+  return '%d %s, %s (%s)' % (member.aga_id, member.last_name, member.first_name, member.rank())
 
 
 Commands = command_loop.CommandTable()

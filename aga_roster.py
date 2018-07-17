@@ -3,6 +3,7 @@
 import abc
 import csv
 import datetime
+import math
 import urllib.request
 
 
@@ -101,4 +102,11 @@ class AGAMember (object):
     self.expiration_date = expiration_date
     self.__class__.AllMembers.append(self)
 
-
+  def rank(self):
+    '''Returns the player's rating interpreted as a dan/kyu rank.'''
+    # See https://senseis.xmp.net/?AGARatingSystem
+    if not self.rating:
+      return '30k'
+    r = math.trunc(self.rating)
+    dk = 'd' if r> 0 else 'k'
+    return '%d%s' % (abs(r), dk)
