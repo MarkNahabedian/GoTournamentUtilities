@@ -1,0 +1,9 @@
+TOURNEY
+My test tournament.
+
+PLAYERS
+  7068 Nahabedian, Mark 12K
+  2151 Metcalf, Wanda 5K
+  1144 Casey, Eva W. 5K
+
+

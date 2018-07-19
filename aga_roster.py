@@ -101,12 +101,28 @@ class AGAMember (object):
     self.rating = rating
     self.expiration_date = expiration_date
     self.__class__.AllMembers.append(self)
+    self._playing_at = None
 
+  def __repr__(self):
+    return 'AGAMember(%r, %r, %r, %r, %r, %r)' % (
+        self.last_name, self.first_name, self.aga_id,
+        self.membership_type, self.rating, self.expiration_date)
+
+  @property
   def rank(self):
     '''Returns the player's rating interpreted as a dan/kyu rank.'''
     # See https://senseis.xmp.net/?AGARatingSystem
     if not self.rating:
       return '30k'
     r = math.trunc(self.rating)
-    dk = 'd' if r> 0 else 'k'
+    dk = 'D' if r > 0 else 'K'
     return '%d%s' % (abs(r), dk)
+
+  @property
+  def playing_at(self):
+    return self._playing_at or self.rank
+
+  def play_at(self, rank):
+    assert isinstance(rank, str), 'Got %r' % (rank,)
+    self._playing_at = rank
+

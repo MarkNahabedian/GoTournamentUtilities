@@ -2,9 +2,10 @@
 import argparse
 import sys
 from aga_roster import AGAMember
+from aga_report_format import AGAReport
 import command_loop
 
-REGISTRATION_FILE = 'players.tsv'
+REGISTRATION_FILE = 'players.txt'
 
 parser = argparse.ArgumentParser()
 
@@ -21,20 +22,32 @@ registration.py depends on the AGA membership file TDListA.txt being
 present in that directory.  If it's not there it will be downloaded.
 An internet connection is required in this case.
 
-Once started, registration.py enters a command loop.  Type '?' for
+Once started, registration.py enters a command loop.  Type 'help' for
 help.
 '''
 
 
 class ApplicationState(object):
-  def __init__(self):
+  def __init__(self, aga_report):
+    self.aga_report = aga_report
     self.found = []
-    self.registered = []
+
+  @property
+  def registered(self):
+    return self.aga_report.players
 
   def list_found(self):
     sys.stdout.write('\n%d members match the last search:\n' % len(self.found))
     i = 1
     for m in self.found:
+      sys.stdout.write('  %3d.  %s\n' % (i, pretty_member(m, True)))
+      i += 1
+
+  def list_players(self):
+    sys.stdout.write('\nThere are %d players registered for the tournament:\n' %
+                     len(self.registered))
+    i = 1
+    for m in self.registered:
       sys.stdout.write('  %3d.  %s\n' % (i, pretty_member(m, True)))
       i += 1
 
@@ -48,8 +61,8 @@ class ApplicationState(object):
 
 def pretty_member(member, listformat=False):
   if listformat:
-    return '%6d %s, %s (%s)' % (member.aga_id, member.last_name, member.first_name, member.rank())
-  return '%d %s, %s (%s)' % (member.aga_id, member.last_name, member.first_name, member.rank())
+    return '%6d %s, %s (%s)' % (member.aga_id, member.last_name, member.first_name, member.playing_at)
+  return '%d %s, %s (%s)' % (member.aga_id, member.last_name, member.first_name, member.playing_at)
 
 
 Commands = command_loop.CommandTable()
@@ -102,10 +115,32 @@ def register(match, state, **ignore):
   state.register(state.found[index - 1])
 
 
+@Commands('who', 'who')
+def who_is_playing(state, **ignore):
+  '''Lists those who are registered for the tournament.'''
+  state.list_players()
+
+
+@Commands('save', 'save')
+def save_registration(state, **ignore):
+  '''Save the state of registration to a file.'''
+  state.aga_report.save()
+  sys.stdout.write('Wrote %s.\n' % state.aga_report.file_name)
+
+
+@Commands('reload', 'reload')
+def reload_saved_file(state, **ignore):
+  state.aga_report.load()
+
+
 def main():
   args = parser.parse_args()
   AGAMember.ensure_loaded()
-  Commands.command_loop(ApplicationState())
+  aga_report = AGAReport(REGISTRATION_FILE)
+  aga_report.load()
+  state = ApplicationState(aga_report)
+  Commands.command_loop(state)
+  aga_report.save()
 
 
 if __name__ == '__main__':

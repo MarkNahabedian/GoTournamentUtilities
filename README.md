@@ -18,7 +18,7 @@ This is how I envision the workflow:
 
 ## Notes
 
-### Desigbn Principles
+### Design Principles
 
 All information associated with a tournament should be maintained in
 tab separated text files.  This allows the tournament director to view
