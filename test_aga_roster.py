@@ -1,4 +1,4 @@
-# Test code fior aga_roster.py.  Assumes the presence of a TDListA.txt
+# Test code for aga_roster.py.  Assumes the presence of a TDListA.txt
 # file contraining the member record of the author.
 #
 # To run:
@@ -43,6 +43,17 @@ class TestAGARoster(unittest.TestCase):
     self.assertEqual(FIRST_NAME, m.first_name)
     self.assertEqual(LAST_NAME, m.last_name)
 
+  def test_highest_rank(self):
+    max = -1000
+    min = 1000
+    for member in AGAMember.AllMembers:
+      if member.rating:
+        if member.rating > max:
+          max = member.rating
+        if member.rating < min:
+          min = member.rating
+    self.assertLess(max, 10)
+    self.assertGreaterEqual(min, -30)
 
 if __name__ == '__main__':
     unittest.main()
