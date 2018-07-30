@@ -4,6 +4,7 @@ import abc
 import csv
 import datetime
 import math
+import rank
 import urllib.request
 
 
@@ -77,7 +78,7 @@ class AGAMember (object):
     '''Returns a list of AGAMember objects whose first or last names contain substring.'''
     matches = []
     for member in cls.AllMembers:
-      if substring in member.last_name:
+      if substring.lower() in member.last_name.lower():
         matches.append(member)
         continue
       if member.first_name and substring in member.first_name:
@@ -113,10 +114,8 @@ class AGAMember (object):
     '''Returns the player's rating interpreted as a dan/kyu rank.'''
     # See https://senseis.xmp.net/?AGARatingSystem
     if not self.rating:
-      return '30k'
-    r = math.trunc(self.rating)
-    dk = 'D' if r > 0 else 'K'
-    return '%d%s' % (abs(r), dk)
+      return rank.rank_from_rating(-30)
+    return rank.rank_from_rating(self.rating)
 
   @property
   def playing_at(self):
