@@ -62,7 +62,7 @@ class ApplicationState(object):
 def pretty_member(member, listformat=False):
   if listformat:
     return '%6d %s, %s (%s)' % (member.aga_id, member.last_name, member.first_name, member.playing_at)
-  return '%d %s, %s (%s)' % (member.aga_id, member.last_name, member.first_name, member.playing_at)
+  return '%d %s, %s (%s)' % (member.aga_id, member.last_name, member.first_name, member.playing_at.name)
 
 
 Commands = command_loop.CommandTable()
@@ -113,6 +113,13 @@ def register(match, state, **ignore):
     sys.stderr.write('Selection %d is out of range.\n' % count)
     return
   state.register(state.found[index - 1])
+
+
+# What's the domain of the parameter of unregister?  state.found or
+# aga_report.players?
+# @Commands('unregister', 'unr(?P<INDEX>[0-9]*)')
+# def unregister(match, state, **ignore):
+#   pass
 
 
 @Commands('who', 'who')

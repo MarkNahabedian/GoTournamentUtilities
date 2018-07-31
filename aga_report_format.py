@@ -2,6 +2,7 @@
 
 import datetime
 import re
+from rank import Rank
 from file_line_reader import FileLineReader
 from aga_roster import AGAMember
 from tournament import Tournament
@@ -137,7 +138,7 @@ def write_players_section(output, players):
         'AGA_ID': p.aga_id,
         'LAST_NAME': p.last_name,
         'FIRST_NAME': p.first_name,
-        'RANK': p.playing_at
+        'RANK': p.playing_at.name
         } + '\n')
   output.write('\n')
 
@@ -158,7 +159,7 @@ def read_players(input):
     if not m:
       raise FileFormatError(input, input.line_number, line, 'malformed player line.')
     aga_id = int(m.group('AGA_ID'))
-    rank = m.group('RANK')
+    rank = Rank[m.group('RANK')]
     player = AGAMember.lookupID(aga_id)
     if ',' in m.group('COMMA'):
       first_name = m.group('NAME2')

@@ -6,6 +6,7 @@ import datetime
 import math
 import rank
 import urllib.request
+from rank import Rank
 
 
 AGA_MEMBER_FILE_URI = 'https://www.usgo.org/ratings/TDListA.txt'
@@ -122,6 +123,6 @@ class AGAMember (object):
     return self._playing_at or self.rank
 
   def play_at(self, rank):
-    assert isinstance(rank, str), 'Got %r' % (rank,)
+    assert isinstance(rank, Rank), 'Got %r' % (rank,)
     self._playing_at = rank
 
