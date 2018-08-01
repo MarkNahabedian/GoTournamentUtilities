@@ -17,7 +17,11 @@ del define_ranks
 
 
 def rank_from_rating(rating):
-  r = math.trunc(rating)
+  # I've seen ratings in the AGA member file that are outside of the
+  # valid range of -30 to 9.
+  r = max(rating, -30)
+  r = min(r, 9)
+  r = math.trunc(r)
   if r >= 1:
     # Dan rating
     return Rank(Rank['1D'].value + r - 1)
