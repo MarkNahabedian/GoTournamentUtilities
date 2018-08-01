@@ -61,7 +61,7 @@ class ApplicationState(object):
 
 def pretty_member(member, listformat=False):
   if listformat:
-    return '%6d %s, %s (%s)' % (member.aga_id, member.last_name, member.first_name, member.playing_at)
+    return '%6d %s, %s (%s)' % (member.aga_id, member.last_name, member.first_name, member.playing_at.name)
   return '%d %s, %s (%s)' % (member.aga_id, member.last_name, member.first_name, member.playing_at.name)
 
 
