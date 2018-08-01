@@ -116,7 +116,7 @@ def read_tournament_header_string(input):
     if line == '\n':
       break
     lines.append(line)
-  return ''.join(lines)
+  return ''.join(lines).strip()
 
 
 def skip_empty_lines(input):
@@ -196,6 +196,6 @@ class AGAReport (object):
 
   def save(self):
     with open(self.file_name, 'w') as output:
-      output.write('%s\n%s\n' % (SH_TOURNAMENT, self.tournament_header))
+      output.write('%s\n%s\n\n' % (SH_TOURNAMENT, self.tournament_header))
       write_players_section(output, self.players)
       output.write('\n')
