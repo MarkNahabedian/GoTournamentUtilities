@@ -28,9 +28,14 @@ help.
 
 
 class ApplicationState(object):
+  LISTING_NONE = 0
+  LISTING_FOUND = 1
+  LISTING_REGISTERED = 2
+
   def __init__(self, aga_report):
     self.aga_report = aga_report
     self.found = []
+    self.last_listing = ApplicationState.LISTING_NONE
 
   @property
   def registered(self):
@@ -42,6 +47,7 @@ class ApplicationState(object):
     for m in self.found:
       sys.stdout.write('  %3d.  %s\n' % (i, pretty_member(m, True)))
       i += 1
+    self.last_listing = ApplicationState.LISTING_FOUND
 
   def list_players(self):
     sys.stdout.write('\nThere are %d players registered for the tournament:\n' %
@@ -50,6 +56,7 @@ class ApplicationState(object):
     for m in self.registered:
       sys.stdout.write('  %3d.  %s\n' % (i, pretty_member(m, True)))
       i += 1
+    self.last_listing = ApplicationState.LISTING_REGISTERED
 
   def register(self, member):
     if member in self.registered:
@@ -57,6 +64,13 @@ class ApplicationState(object):
     else:
       self.registered.append(member)
       sys.stdout.write('%s registered.\n' % pretty_member(member))
+
+  def unregister(self, member):
+    if member not in self.registered:
+      sys.stderr.write("%s isn't registered.\n" % pretty_member(member))
+    else:
+      self.registered.remove(member)
+      sys.stdout.write('%s is no longer registered.\n' % pretty_member(member))
 
 
 def pretty_member(member, listformat=False):
@@ -104,22 +118,31 @@ def list_found(state, **ignore):
 @Commands('register', 'r(?P<INDEX>[0-9]*)')
 def register(match, state, **ignore):
   '''Register a player from among the most recent search results.'''
+  if state.last_listing != ApplicationState.LISTING_FOUND:
+    sys.stderr.write('You need to do a player search first.')
+    return
   count = len(state.found)
   if count == 1:
     state.register(state.found[0])
     return
   index = int(match.group('INDEX'))
   if index < 1 or index > count:
-    sys.stderr.write('Selection %d is out of range.\n' % count)
+    sys.stderr.write('Selection %d is out of range.\n' % index)
     return
   state.register(state.found[index - 1])
 
 
-# What's the domain of the parameter of unregister?  state.found or
-# aga_report.players?
-# @Commands('unregister', 'unr(?P<INDEX>[0-9]*)')
-# def unregister(match, state, **ignore):
-#   pass
+@Commands('unregister', 'unr(?P<INDEX>[0-9]*)')
+def unregister(match, state, **ignore):
+  if state.last_listing != ApplicationState.LISTING_REGISTERED:
+    sys.stderr.write('First use the "who" command to list the players who are registered.')
+    return
+  count = len(state.registered)
+  index = int(match.group('INDEX'))
+  if index < 1 or index > count:
+    sys.stderr.write('Selection %d is out of range.\n' % index)
+    return
+  state.unregister(state.registered[index - 1])
 
 
 @Commands('who', 'who')
